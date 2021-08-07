@@ -5,6 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConvertComponent } from './convert/convert.component';
 
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
+import { FormsModule } from '@angular/forms';
+import { ClipboardModule } from 'ngx-clipboard';
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -12,7 +19,11 @@ import { ConvertComponent } from './convert/convert.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ClipboardModule,
+   
+    
+    FormsModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

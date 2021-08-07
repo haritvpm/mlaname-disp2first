@@ -1,6 +1,7 @@
 export interface MlaName {
     userid: string;
-    dispname: string;
-    flname: string;
-
+    fname: string;
+    lname: string;
+    email: string;
+    mobile: string;
   }

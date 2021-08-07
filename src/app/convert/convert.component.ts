@@ -1,8 +1,9 @@
 import { MLANAMES } from './../mla-names';
 import { MlaName } from './../interfaces/mlaname';
-import { Component, OnInit,NgZone,ViewChild } from '@angular/core';
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
-import {take} from 'rxjs/operators';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+//import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+//import {take} from 'rxjs/operators';
+import { ClipboardService } from 'ngx-clipboard';
 
 
 @Component({
@@ -15,17 +16,62 @@ export class ConvertComponent implements OnInit {
 
 
   mlanames = MLANAMES;
+  inputnames = ''
+  outputnames = ''
+  conv = ''
+  errors = ''
+  constructor( private clipboardApi: ClipboardService ) { }
 
-  constructor(private _ngZone: NgZone) { }
-  @ViewChild('autosize') autosize: CdkTextareaAutosize;
+
 
   ngOnInit(): void {
   }
 
-  triggerResize() {
-    // Wait for changes to be applied, then trigger textarea resize.
-    this._ngZone.onStable.pipe(take(1))
-        .subscribe(() => this.autosize.resizeToFitContent(true));
+  onConvert() {
+    try {
+
+
+      //create mlalogin to firstname map
+      let map = new Map();
+      this.mlanames.forEach(mlaname => {
+
+        map.set(mlaname.userid, mlaname.fname + ' ' + mlaname.lname)
+
+      })
+
+      this.conv = ''
+      this.errors = ''
+
+      let mlalogins = this.inputnames.split('\n')
+
+      mlalogins.forEach(mlaname => {
+
+        mlaname.trim();
+        if (mlaname) {
+          if (!map.has(mlaname)) {
+            this.errors += mlaname + '\n'
+          }
+          this.conv += map.get(mlaname) + '\n'
+        }
+
+      })
+
+      if (this.errors) {
+        //alert('Unable to convert: \n' + this.errors)
+        this.outputnames = 'Unable to convert: \n' + this.errors
+      } else {
+        this.outputnames = this.conv
+      }
+
+    } catch (e) {
+      console.info('could not set textarea-value');
+    }
+  }
+
+
+  onCopy(){
+    this.clipboardApi.copyFromContent(this.outputnames)
+
   }
 
 }
